@@ -1,5 +1,5 @@
-*.js linguist-language=csharp；
-*.css linguist-language=csharp；
+*.js linguist-language=csharp
+*.css linguist-language=csharp
 *.html linguist-language=csharp
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
