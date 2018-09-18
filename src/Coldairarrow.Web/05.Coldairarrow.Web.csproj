@@ -18,15 +18,45 @@
 
   <ItemGroup>
     <Compile Remove="Areas\ProjectManage\**" />
+    <Compile Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
     <Content Remove="Areas\ProjectManage\**" />
+    <Content Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
     <EmbeddedResource Remove="Areas\ProjectManage\**" />
+    <EmbeddedResource Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
     <None Remove="Areas\ProjectManage\**" />
+    <None Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Scripts\vendor\umeditor\net\getContent.ashx" />
+    <Content Remove="wwwroot\Scripts\vendor\umeditor\net\imageUp.ashx" />
+    <Content Remove="wwwroot\Scripts\vendor\umeditor\net\Uploader.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Base_SysManage\Views\Base_SysLog\Index.cshtml" />
     <None Include="wwwroot\img.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\emotion\emotion.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\formula\formula.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\image\image.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\link\link.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\map\map.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\video\video.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\lang\en\en.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\lang\zh-cn\zh-cn.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\jquery.min.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneral-webfont.svg" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralbol-webfont.svg" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralbolita-webfont.svg" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralitalic-webfont.svg" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\font\Symbola.svg" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\mathquill.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\third-party\mathquill\mathquill.min.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\umeditor.config.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\umeditor.js" />
+    <None Include="wwwroot\Scripts\vendor\umeditor\umeditor.min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +65,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,9 +130,6 @@
     <Content Update="Views\Home\Statis.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Home\Test.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Views\Shared\_Layout_List.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -126,6 +154,10 @@
     <None Update="runDocker.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Scripts\vendor\umeditor\net\" />
   </ItemGroup>
 
 </Project>

@@ -68,17 +68,19 @@ namespace Coldairarrow.Util
         {
             string sql = @"select
   a.name AS TableName,
-	g.[value] AS Description
+	min(g.[value]) AS Description
 from
   sys.tables a left join sys.extended_properties g
   on (a.object_id = g.major_id AND g.minor_id = 0)
+  group by a.name
 UNION
 select
-  a.name AS TableName,
-	g.[value] AS Description
+    a.name AS TableName,
+	min(g.[value]) AS Description
 from
   sys.views a left join sys.extended_properties g
-  on (a.object_id = g.major_id AND g.minor_id = 0)";
+  on (a.object_id = g.major_id AND g.minor_id = 0)
+group by a.name";
             return GetListBySql<DbTableInfo>(sql);
         }
 

@@ -11,9 +11,9 @@ namespace Coldairarrow.Util
 
         static GlobalSwitch()
         {
-//#if !DEBUG
-//            RunModel = RunModel.Publish;
-//#endif
+#if !DEBUG
+            RunModel = RunModel.Publish;
+#endif
         }
 
         #endregion
@@ -24,6 +24,11 @@ namespace Coldairarrow.Util
         /// 项目名
         /// </summary>
         public static string ProjectName { get; } = "Coldairarrow.Fx.Core.Easyui.GitHub";
+
+        /// <summary>
+        /// 网站根地址
+        /// </summary>
+        public static string WebRootUrl { get; set; } = "http://localhost:51126";
 
         #endregion
 

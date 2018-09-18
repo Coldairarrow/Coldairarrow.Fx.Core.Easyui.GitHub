@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Util;
+﻿using Coldairarrow.Business.Common;
+using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -9,9 +10,9 @@ namespace Coldairarrow.Web
         public void OnException(ExceptionContext context)
         {
             var ex = context.Exception;
-            string msg = ExceptionHelper.GetExceptionAllMsg(ex);
+            BusHelper.HandleException(ex);
 
-            context.Result = new ContentResult { Content = new AjaxResult { Success = false, Msg = msg }.ToJson() };
+            context.Result = new ContentResult { Content = new AjaxResult { Success = false, Msg = ex.Message }.ToJson() };
         }
     }
 }
