@@ -46,11 +46,6 @@ namespace Coldairarrow.Web
             return View();
         }
 
-        public ActionResult Test()
-        {
-            return View();
-        }
-
         #endregion
 
         #region 获取数据
