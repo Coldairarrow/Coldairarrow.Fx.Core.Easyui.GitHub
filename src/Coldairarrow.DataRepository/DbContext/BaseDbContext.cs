@@ -38,7 +38,7 @@ namespace Coldairarrow.DataRepository
             switch (_dbType)
             {
                 case DatabaseType.SqlServer: optionsBuilder.UseSqlServer(conStr, x => x.UseRowNumberForPaging()).EnableSensitiveDataLogging(); break;
-                case DatabaseType.MySql: optionsBuilder.UseMySQL(conStr); break;
+                case DatabaseType.MySql: optionsBuilder.UseMySql(conStr); break;
                 case DatabaseType.PostgreSql: optionsBuilder.UseNpgsql(conStr); break;
                 default: throw new Exception("暂不支持该数据库！");
             }
