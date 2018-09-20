@@ -128,7 +128,7 @@ namespace Coldairarrow.UnitTests
             //删除多条数据,主键形式
             _baseBus.DeleteAll();
             _baseBus.Insert(_insertList);
-            _baseBus.Delete(_insertList.Select(x=>x.Id).ToList());
+            _baseBus.Delete(_insertList.Select(x => x.Id).ToList());
             count = _baseBus.GetIQueryable().Count();
             Assert.AreEqual(0, count);
 
@@ -322,7 +322,7 @@ namespace Coldairarrow.UnitTests
             var newData = _newData.DeepClone();
             newData.Id = Guid.NewGuid().ToString();
             newData.UserId = Guid.NewGuid().ToSequentialGuid();
-            newData.UserName= Guid.NewGuid().ToSequentialGuid();
+            newData.UserName = Guid.NewGuid().ToSequentialGuid();
             _baseBus.Insert(_newData);
             _baseBus.Insert(newData);
             succcess = _baseBus.EndTransaction();
@@ -345,8 +345,8 @@ namespace Coldairarrow.UnitTests
             Base_UnitTest data1 = new Base_UnitTest
             {
                 Id = Guid.NewGuid().ToString(),
-                UserId="1",
-                UserName= Guid.NewGuid().ToString()
+                UserId = "1",
+                UserName = Guid.NewGuid().ToString()
             };
             Base_UnitTest data2 = new Base_UnitTest
             {
