@@ -17,13 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\ProjectManage\**" />
     <Compile Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
-    <Content Remove="Areas\ProjectManage\**" />
     <Content Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
-    <EmbeddedResource Remove="Areas\ProjectManage\**" />
     <EmbeddedResource Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
-    <None Remove="Areas\ProjectManage\**" />
     <None Remove="wwwroot\Scripts\vendor\umeditor\net\upload\**" />
   </ItemGroup>
 
