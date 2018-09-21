@@ -103,9 +103,9 @@ namespace Coldairarrow.Util
 
                 using (DbCommand cmd = conn.CreateCommand())
                 {
+                    
                     cmd.Connection = conn;
                     cmd.CommandText = sql;
-
                     if (parameters != null && parameters.Count > 0)
                     {
                         foreach (var item in parameters)
@@ -113,7 +113,7 @@ namespace Coldairarrow.Util
                             cmd.Parameters.Add(item);
                         }
                     }
-
+                    
                     DbDataAdapter adapter = dbProviderFactory.CreateDataAdapter();
                     adapter.SelectCommand = cmd;
                     DataSet table = new DataSet();
@@ -214,7 +214,7 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="schemaName">模式（架构）</param>
         /// <returns></returns>
-        public abstract List<DbTableInfo> GetDbAllTables(string schemaName = "dbo");
+        public abstract List<DbTableInfo> GetDbAllTables(string schemaName = null);
 
         /// <summary>
         /// 通过连接字符串和表名获取数据库表的信息

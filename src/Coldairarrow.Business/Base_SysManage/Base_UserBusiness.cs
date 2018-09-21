@@ -90,6 +90,7 @@ namespace Coldairarrow.Business.Base_SysManage
             Service.Insert(insertList);
             _cache.UpdateCache(userId);
             _userRoleCache.UpdateCache(userId);
+            PermissionManage.UpdateUserPermissionCache(userId);
         }
 
         /// <summary>

@@ -64,8 +64,10 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="schemaName">模式（架构）</param>
         /// <returns></returns>
-        public override List<DbTableInfo> GetDbAllTables(string schemaName = "public")
+        public override List<DbTableInfo> GetDbAllTables(string schemaName = null)
         {
+            if (schemaName.IsNullOrEmpty())
+                schemaName = "dbo";
             string sql = @"select
   a.name AS TableName,
 	min(g.[value]) AS Description
