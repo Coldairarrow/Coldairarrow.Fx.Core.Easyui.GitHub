@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Business.Common;
+﻿using Coldairarrow.Business.Base_SysManage;
+using Coldairarrow.Business.Common;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -132,6 +133,11 @@ namespace Coldairarrow.Web
                     aMenu.IsShow = false;
             });
         }
+        private static string GetUrl(string virtualUrl)
+        {
+            UrlHelper urlHelper = new UrlHelper(AutofacHelper.GetService<IActionContextAccessor>().ActionContext);
+            return urlHelper.Content(virtualUrl);
+        }
 
         #endregion
 
@@ -164,12 +170,6 @@ namespace Coldairarrow.Web
         }
 
         #endregion
-
-        private static string GetUrl(string virtualUrl)
-        {
-            UrlHelper urlHelper = new UrlHelper(AutofacHelper.GetService<IActionContextAccessor>().ActionContext);
-            return urlHelper.Content(virtualUrl);
-        }
     }
 
     #region 数据模型

@@ -1,6 +1,4 @@
-﻿using Coldairarrow.Business;
-using Coldairarrow.Business.Base_SysManage;
-using Coldairarrow.Business.Common;
+﻿using Coldairarrow.Business.Common;
 using Coldairarrow.Entity.Base_SysManage;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Coldairarrow.Web
+namespace Coldairarrow.Business.Base_SysManage
 {
     /// <summary>
     /// 权限管理静态类
@@ -99,7 +97,7 @@ namespace Coldairarrow.Web
         {
             return $"{GlobalSwitch.ProjectName}_{_cacheKey}_{key}";
         }
-        
+
         #endregion
 
         #region 所有权限
@@ -180,7 +178,7 @@ namespace Coldairarrow.Web
         /// </summary>
         /// <param name="appId">AppId</param>
         /// <param name="permissions">权限值列表</param>
-        public static void SetAppIdPermission(string appId,List<string> permissions)
+        public static void SetAppIdPermission(string appId, List<string> permissions)
         {
             //更新缓存
             string cacheKey = BuildCacheKey(appId);
@@ -246,7 +244,7 @@ namespace Coldairarrow.Web
         /// </summary>
         /// <param name="userId">用户Id</param>
         /// <param name="permissions">权限值列表</param>
-        public static void SetUserPermission(string userId,List<string> permissions)
+        public static void SetUserPermission(string userId, List<string> permissions)
         {
             //更新数据库
             BaseBusiness<Base_UnitTest> _db = new BaseBusiness<Base_UnitTest>();
