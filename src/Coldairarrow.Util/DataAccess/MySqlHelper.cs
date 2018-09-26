@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -36,10 +37,19 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="schemaName">模式（架构）</param>
         /// <returns></returns>
-        public override List<DbTableInfo> GetDbAllTables(string schemaName = "public")
+        public override List<DbTableInfo> GetDbAllTables(string schemaName = null)
         {
-            string sql = @"";
-            return GetListBySql<DbTableInfo>(sql);
+            DbProviderFactory dbProviderFactory = DbProviderFactoryHelper.GetDbProviderFactory(_dbType);
+            string dbName = string.Empty;
+            using (DbConnection conn = dbProviderFactory.CreateConnection())
+            {
+                conn.ConnectionString = _conStr;
+                dbName = conn.Database;
+            }
+                string sql = @"SELECT TABLE_NAME as TableName,table_comment as Description 
+FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_SCHEMA = @dbName";
+            return GetListBySql<DbTableInfo>(sql,new List<DbParameter> { new MySqlParameter("@dbName", dbName) });
         }
 
         /// <summary>
