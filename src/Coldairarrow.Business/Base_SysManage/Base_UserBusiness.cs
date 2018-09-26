@@ -75,6 +75,7 @@ namespace Coldairarrow.Business.Base_SysManage
                 throw new Exception("禁止更改超级管理员！");
 
             Update(theData);
+            _cache.UpdateCache(theData.UserId);
         }
 
         public void SetUserRole(string userId, List<string> roleIds)
@@ -105,8 +106,8 @@ namespace Coldairarrow.Business.Base_SysManage
                 throw new Exception("超级管理员是内置账号,禁止删除！");
 
             Delete(ids);
-            _cache.UpdateCache(ids);
-            _userRoleCache.UpdateCache(ids);
+            _cache.UpdateCache(userIds);
+            _userRoleCache.UpdateCache(userIds);
         }
 
         /// <summary>
