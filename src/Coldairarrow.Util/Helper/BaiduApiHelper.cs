@@ -162,7 +162,7 @@ namespace Coldairarrow.Util
         {
             try
             {
-                BaiduApiHelper baiduApiHelper = new BaiduApiHelper("4UvFRKnx0ako4WKaNI4F11SW", "vMmTmRD5G5vPo0euGRopCz4Wnsk2KMcG");
+                BaiduApiHelper baiduApiHelper = new BaiduApiHelper("", "");
 
                 string host = "http://sms.bj.baidubce.com";
                 string url = "/bce/v2/message";
