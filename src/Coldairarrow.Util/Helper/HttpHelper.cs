@@ -196,16 +196,24 @@ namespace Coldairarrow.Util
             var request = context.Request;
             List<string> paramKeys = new List<string>();
             var getParams = request.Query.Keys.ToList();
-            var postParams = request.Form.Keys.ToList();
+            var postParams = new List<string>();
+            if (request.Method.ToLower() != "get")
+                postParams = request.Form.Keys.ToList();
             paramKeys.AddRange(getParams);
             paramKeys.AddRange(postParams);
 
             paramKeys.ForEach(aParam =>
             {
-                allParams.Add(aParam, context.Items[aParam]);
+                object value = null;
+                if (request.Query.ContainsKey(aParam))
+                    value = request.Query[aParam];
+                else if (request.Form.ContainsKey(aParam))
+                    value = request.Form[aParam];
+
+                allParams.Add(aParam, value);
             });
 
-            string contentType = request.ContentType.ToLower();
+            string contentType = request.ContentType?.ToLower() ?? "";
 
             //若为POST的application/json
             if (contentType.Contains("application/json"))
