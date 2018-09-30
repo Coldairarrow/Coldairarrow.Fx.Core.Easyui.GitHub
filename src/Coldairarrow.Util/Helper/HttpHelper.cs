@@ -26,8 +26,7 @@ namespace Coldairarrow.Util
         static HttpHelper()
         {
             ServicePointManager.SecurityProtocol =
-                SecurityProtocolType.Ssl3
-                | SecurityProtocolType.Tls12
+                SecurityProtocolType.Tls12
                 | SecurityProtocolType.Tls11
                 | SecurityProtocolType.Tls;
 
