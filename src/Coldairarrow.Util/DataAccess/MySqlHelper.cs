@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
 
 namespace Coldairarrow.Util
 {
@@ -26,7 +25,29 @@ namespace Coldairarrow.Util
 
         #region 私有成员
 
-        protected override Dictionary<string, Type> DbTypeDic => throw new NotImplementedException();
+        protected override Dictionary<string, Type> DbTypeDic { get; } = new Dictionary<string, Type>
+        {
+            { "boolean",typeof(bool)},
+            { "bit(1)",typeof(bool)},
+            { "tinyint unsigned",typeof(byte)},
+            { "binary",typeof(byte[])},
+            { "varbinary",typeof(byte[])},
+            { "blob",typeof(byte[])},
+            { "longblob",typeof(byte[])},
+            { "datetime",typeof(DateTime)},
+            { "double",typeof(double)},
+            { "char(36)",typeof(Guid)},
+            { "smallint",typeof(Int16)},
+            { "int",typeof(Int32)},
+            { "bigint",typeof(Int64)},
+            { "tinyint",typeof(SByte)},
+            { "float",typeof(Single)},
+            { "char",typeof(string)},
+            { "varchar",typeof(string)},
+            { "text",typeof(string)},
+            { "longtext",typeof(string)},
+            { "time",typeof(TimeSpan)}
+        };
 
         #endregion
 
@@ -59,8 +80,16 @@ WHERE TABLE_SCHEMA = @dbName";
         /// <returns></returns>
         public override List<TableInfo> GetDbTableInfo(string tableName)
         {
-            string sql = @"";
-            return GetListBySql<TableInfo>(sql, new List<DbParameter> { new SqlParameter("@table_name", tableName) });
+            string sql = @"select 
+	a.COLUMN_NAME as Name,
+	a.DATA_TYPE as Type,
+	(a.COLUMN_KEY = 'PRI') as IsKey,
+	(a.IS_NULLABLE = 'YES') as IsNullable,
+	a.COLUMN_COMMENT as Description
+from information_schema.columns a 
+where table_name=@tableName
+ORDER BY a.ORDINAL_POSITION";
+            return GetListBySql<TableInfo>(sql, new List<DbParameter> { new MySqlParameter("@tableName", tableName) });
         }
 
         /// <summary>
