@@ -51,7 +51,6 @@ namespace Coldairarrow.Util
             }
 
             return factory;
-            //return DbProviderFactories.GetFactory(_invariantNames[dbType]);
         }
 
         /// <summary>

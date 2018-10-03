@@ -67,10 +67,10 @@ namespace Coldairarrow.Util
                 conn.ConnectionString = _conStr;
                 dbName = conn.Database;
             }
-                string sql = @"SELECT TABLE_NAME as TableName,table_comment as Description 
+            string sql = @"SELECT TABLE_NAME as TableName,table_comment as Description 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_SCHEMA = @dbName";
-            return GetListBySql<DbTableInfo>(sql,new List<DbParameter> { new MySqlParameter("@dbName", dbName) });
+            return GetListBySql<DbTableInfo>(sql, new List<DbParameter> { new MySqlParameter("@dbName", dbName) });
         }
 
         /// <summary>
