@@ -80,7 +80,7 @@ WHERE TABLE_SCHEMA = @dbName";
         /// <returns></returns>
         public override List<TableInfo> GetDbTableInfo(string tableName)
         {
-            string sql = @"select 
+            string sql = @"select DISTINCT
 	a.COLUMN_NAME as Name,
 	a.DATA_TYPE as Type,
 	(a.COLUMN_KEY = 'PRI') as IsKey,
