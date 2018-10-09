@@ -4,7 +4,6 @@ using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
 
 namespace Coldairarrow.Web
 {
@@ -13,24 +12,6 @@ namespace Coldairarrow.Web
     /// </summary>
     public class BaseController : Controller
     {
-        /// <summary>
-        /// 在调用操作方法前调用
-        /// </summary>
-        /// <param name="filterContext">请求上下文</param>
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            var sessionCookie = HttpContext.Request.Cookies[SessionHelper.SessionCookieName];
-            if (sessionCookie.IsNullOrEmpty())
-            {
-                string sessionId = Guid.NewGuid().ToString();
-
-                var requestCookies = HttpContext.Request.Cookies.GetPropertyValue("Store") as Dictionary<string, string>;
-                requestCookies.Add(SessionHelper.SessionCookieName, sessionId);
-
-                HttpContext.Response.Cookies.Append(SessionHelper.SessionCookieName, sessionId, new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.MaxValue });
-            }
-        }
-
         /// <summary>
         /// 在调用操作方法后调用
         /// </summary>
