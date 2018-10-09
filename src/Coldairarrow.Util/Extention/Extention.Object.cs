@@ -131,5 +131,28 @@ namespace Coldairarrow.Util
 
             return xmlDocStr;
         }
+
+        /// <summary>
+        /// 获取某属性值
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <param name="propertyName">属性名</param>
+        /// <returns></returns>
+        public static object GetPropertyValue(this object obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static).GetValue(obj);
+        }
+
+        /// <summary>
+        /// 获取某属性值
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <param name="propertyName">属性名</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public static void SetPropertyValue(this object obj, string propertyName, object value)
+        {
+            obj.GetType().GetProperty(propertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static).SetValue(obj, value);
+        }
     }
 }
