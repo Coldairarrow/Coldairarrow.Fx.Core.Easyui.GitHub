@@ -307,9 +307,12 @@ namespace Coldairarrow.Util
             List<MemberBinding> newBindings = new List<MemberBinding>();
             typeof(TResult).GetProperties().Where(x => !existsProperties.Contains(x.Name)).ForEach(aProperty =>
             {
-                MemberInfo newMember = typeof(TBase).GetMember(aProperty.Name)[0];
-                MemberBinding newMemberBinding = Expression.Bind(newMember, Expression.Property(oldParamters[0], aProperty.Name));
-                newBindings.Add(newMemberBinding);
+                if (typeof(TBase).GetMembers().Any(x => x.Name == aProperty.Name))
+                {
+                    MemberInfo newMember = typeof(TBase).GetMember(aProperty.Name)[0];
+                    MemberBinding newMemberBinding = Expression.Bind(newMember, Expression.Property(oldParamters[0], aProperty.Name));
+                    newBindings.Add(newMemberBinding);
+                }
             });
 
             newBindings.AddRange(oldExpression.Bindings);
