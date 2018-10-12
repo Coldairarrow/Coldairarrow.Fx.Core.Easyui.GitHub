@@ -304,14 +304,17 @@ namespace Coldairarrow.Util
                 existsProperties.Add(aBinding.Member.Name);
             });
 
-            List<MemberBinding> bindings = oldExpression.Bindings.ToList();
-            typeof(TBase).GetProperties().Where(x => !existsProperties.Contains(x.Name)).ForEach(aProperty =>
+            List<MemberBinding> newBindings = new List<MemberBinding>();
+            typeof(TResult).GetProperties().Where(x => !existsProperties.Contains(x.Name)).ForEach(aProperty =>
             {
-                MemberInfo newMember = typeof(TResult).GetMember(aProperty.Name)[0];
-                MemberBinding newMemberBinding = Expression.Bind(newMember, Expression.PropertyOrField(oldParamters[0], aProperty.Name));
-                bindings.Add(newMemberBinding);
+                MemberInfo newMember = typeof(TBase).GetMember(aProperty.Name)[0];
+                MemberBinding newMemberBinding = Expression.Bind(newMember, Expression.Property(oldParamters[0], aProperty.Name));
+                newBindings.Add(newMemberBinding);
             });
-            var body = Expression.MemberInit(newBody, bindings.ToArray());
+
+            newBindings.AddRange(oldExpression.Bindings);
+
+            var body = Expression.MemberInit(newBody, newBindings.ToArray());
             var resExpression = Expression.Lambda<TDelegate>(body, oldParamters);
 
             return resExpression;

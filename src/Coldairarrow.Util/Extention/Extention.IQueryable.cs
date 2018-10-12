@@ -82,7 +82,7 @@ namespace Coldairarrow.Util
             sort.ForEach((aSort, index) =>
             {
                 //根据属性名获取属性
-                var property = typeof(T).GetProperty(aSort.Key);
+                var property = GetTheProperty(typeof(T), aSort.Key);
                 //创建一个访问属性的表达式
                 var propertyAccess = Expression.MakeMemberAccess(parameter, property);
                 var orderByExp = Expression.Lambda(propertyAccess, parameter);
@@ -95,12 +95,25 @@ namespace Coldairarrow.Util
                 else
                     OrderName = aSort.Value.ToLower() == "desc" ? "OrderByDescending" : "OrderBy";
 
-                MethodCallExpression resultExp = Expression.Call(typeof(Queryable), OrderName, new Type[] { typeof(T), property.PropertyType }, source.Expression, Expression.Quote(orderByExp));
+                MethodCallExpression resultExp = Expression.Call(
+                    typeof(Queryable), OrderName,
+                    new Type[] { typeof(T), property.PropertyType },
+                    source.Expression,
+                    Expression.Quote(orderByExp));
 
                 source = source.Provider.CreateQuery<T>(resultExp);
             });
 
             return (IOrderedQueryable<T>)source;
+
+            //必须追溯到最基类属性
+            PropertyInfo GetTheProperty(Type type, string propertyName)
+            {
+                if (type.BaseType.GetProperties().Any(x => x.Name == propertyName))
+                    return GetTheProperty(type.BaseType, propertyName);
+                else
+                    return type.GetProperty(propertyName);
+            }
         }
 
         /// <summary>
