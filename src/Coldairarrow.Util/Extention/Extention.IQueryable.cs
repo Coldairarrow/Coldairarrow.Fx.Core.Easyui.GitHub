@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Coldairarrow.Util
 {
@@ -47,7 +51,7 @@ namespace Coldairarrow.Util
         public static IQueryable<T> GetPagination<T>(this IQueryable<T> source, Pagination pagination)
         {
             pagination.records = source.Count();
-            source = source.OrderBy(new KeyValuePair<string, string>(pagination.SortField, pagination.SortType));
+            source = source.OrderBy(pagination.SortField, pagination.SortType);
             return source.Skip((pagination.page - 1) * pagination.rows).Take(pagination.rows);
         }
 
@@ -59,11 +63,18 @@ namespace Coldairarrow.Util
         /// <param name="sortColumn">排序的列</param>
         /// <param name="sortType">排序的方法</param>
         /// <returns></returns>
-        public static IQueryable<T> OrderBy<T>(this IQueryable<T> source, string sortColumn, string sortType)
+        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string sortColumn, string sortType)
         {
-            return source.OrderBy(string.Format("{0} {1}", sortColumn, sortType));
+            return source.OrderBy(new KeyValuePair<string, string>(sortColumn, sortType));
         }
 
+        /// <summary>
+        /// 动态排序法
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="source">数据源</param>
+        /// <param name="sort">排序规则，Key为排序列，Value为排序类型</param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, params KeyValuePair<string, string>[] sort)
         {
             var parameter = Expression.Parameter(typeof(T), "o");
@@ -101,6 +112,32 @@ namespace Coldairarrow.Util
         public static IQueryable<T> AsExpandable<T>(this IQueryable<T> source)
         {
             return LinqKit.Extensions.AsExpandable(source);
+        }
+
+        /// <summary>
+        /// 转换为对应的Sql语句
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <param name="query">数据源</param>
+        /// <returns></returns>
+        public static string ToSql<TEntity>(this IQueryable<TEntity> query) where TEntity : class
+        {
+            TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();
+            FieldInfo QueryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.First(x => x.Name == "_queryCompiler");
+            FieldInfo QueryModelGeneratorField = QueryCompilerTypeInfo.DeclaredFields.First(x => x.Name == "_queryModelGenerator");
+            FieldInfo DataBaseField = QueryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == "_database");
+            PropertyInfo DatabaseDependenciesField = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == "Dependencies");
+            var queryCompiler = (QueryCompiler)QueryCompilerField.GetValue(query.Provider);
+            var modelGenerator = (QueryModelGenerator)QueryModelGeneratorField.GetValue(queryCompiler);
+            var queryModel = modelGenerator.ParseQuery(query.Expression);
+            var database = (IDatabase)DataBaseField.GetValue(queryCompiler);
+            var databaseDependencies = (DatabaseDependencies)DatabaseDependenciesField.GetValue(database);
+            var queryCompilationContext = databaseDependencies.QueryCompilationContextFactory.Create(false);
+            var modelVisitor = (RelationalQueryModelVisitor)queryCompilationContext.CreateQueryModelVisitor();
+            modelVisitor.CreateQueryExecutor<TEntity>(queryModel);
+            var sql = modelVisitor.Queries.First().ToString();
+
+            return sql;
         }
     }
 }
