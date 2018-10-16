@@ -90,25 +90,39 @@ namespace Coldairarrow.Web
                     SubMenus = new List<Menu>()
                 };
                 menus.Add(newMenu1);
-                Menu newMenu2 = new Menu
+                Menu newMenu1_1 = new Menu
                 {
                     Name = "快速开发",
                     SubMenus = new List<Menu>()
                 };
-                newMenu1.SubMenus.Add(newMenu2);
-                Menu newMenu3_1 = new Menu
+                newMenu1.SubMenus.Add(newMenu1_1);
+                Menu newMenu1_1_1 = new Menu
                 {
                     Name = "代码生成",
                     Url = GetUrl("~/Base_SysManage/RapidDevelopment/Index")
                 };
-                newMenu2.SubMenus.Add(newMenu3_1);
+                newMenu1_1.SubMenus.Add(newMenu1_1_1);
 
-                Menu newMenu3_2 = new Menu
+                Menu newMenu1_1_2 = new Menu
                 {
                     Name = "数据库连接管理",
                     Url = GetUrl("~/Base_SysManage/Base_DatabaseLink/Index")
                 };
-                newMenu2.SubMenus.Add(newMenu3_2);
+                newMenu1_1.SubMenus.Add(newMenu1_1_2);
+
+                Menu newMenu1_1_3 = new Menu
+                {
+                    Name = "UEditor Demo",
+                    Url = GetUrl("~/Demo/UMEditor")
+                };
+                newMenu1_1.SubMenus.Add(newMenu1_1_3);
+
+                Menu newMenu1_1_4 = new Menu
+                {
+                    Name = "文件上传Demo",
+                    Url = GetUrl("~/Demo/UploadFileIndex")
+                };
+                newMenu1_1.SubMenus.Add(newMenu1_1_4);
             }
 
             _allMenu = menus;

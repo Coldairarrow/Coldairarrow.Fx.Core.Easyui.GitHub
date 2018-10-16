@@ -31,9 +31,6 @@
 
   <ItemGroup>
     <None Include="Areas\Base_SysManage\Views\Base_SysLog\Index.cshtml" />
-    <None Include="wwwroot\img.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\emotion\emotion.js" />
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\formula\formula.js" />
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\image\image.js" />
@@ -141,7 +138,10 @@
     <Content Update="wwwroot\Download\_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\Upload\_.txt">
+    <Content Update="wwwroot\Upload\File\_.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Upload\Img\_.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
