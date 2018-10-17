@@ -3,7 +3,7 @@
 namespace Coldairarrow.Web
 {
     [IgnoreLogin]
-    public class TestController : BaseMvcController
+    public class TestController : BaseController
     {
         public ActionResult Index()
         {

@@ -46,7 +46,7 @@ namespace Coldairarrow.DataRepository
 
         #region 查询数据
 
-        T GetEntity(object keyValue);
+        T GetEntity(params object[] keyValue);
         List<T> GetList();
         IQueryable<T> GetIQueryable();
         DataTable GetDataTableWithSql(string sql);

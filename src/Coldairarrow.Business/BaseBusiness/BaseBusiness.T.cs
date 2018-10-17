@@ -281,7 +281,7 @@ namespace Coldairarrow.Business
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="keyValue">主键</param>
         /// <returns></returns>
-        public T GetEntity(object keyValue)
+        public T GetEntity(params object[] keyValue)
         {
             return Service.GetEntity<T>(keyValue);
         }

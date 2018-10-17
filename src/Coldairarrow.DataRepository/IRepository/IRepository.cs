@@ -60,7 +60,7 @@ namespace Coldairarrow.DataRepository
 
         #region 查询数据
 
-        T GetEntity<T>(object keyValue) where T : class, new();
+        T GetEntity<T>(params object[] keyValue) where T : class, new();
         List<T> GetList<T>() where T : class, new();
         IQueryable<T> GetIQueryable<T>() where T : class, new();
         DataTable GetDataTableWithSql(string sql);

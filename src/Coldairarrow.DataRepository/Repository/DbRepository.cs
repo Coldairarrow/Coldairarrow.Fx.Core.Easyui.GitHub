@@ -437,7 +437,7 @@ namespace Coldairarrow.DataRepository
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="keyValue">主键</param>
         /// <returns></returns>
-        public T GetEntity<T>(object keyValue) where T : class, new()
+        public T GetEntity<T>(params object[] keyValue) where T : class, new()
         {
             return Db.Set<T>().Find(keyValue);
         }
