@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -40,17 +41,17 @@ namespace Coldairarrow.Util.Sockets
                         byte[] bytes = _udpClient.EndReceive(asyncCallback, ref iPEndPoint);
                         StartRecMsg();
 
-                        HandleRecMsg?.BeginInvoke(this, iPEndPoint, bytes, null, null);
+                        HandleRecMsg?.Invoke(this, iPEndPoint, bytes);
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
         }
 
@@ -66,7 +67,15 @@ namespace Coldairarrow.Util.Sockets
             _udpClient = new UdpClient(_port);
 
             StartRecMsg();
-            HandleStarted?.BeginInvoke(null, null);
+            HandleStarted?.Invoke();
+        }
+
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        public void Stop()
+        {
+            _udpClient.Close();
         }
 
         /// <summary>
@@ -84,17 +93,17 @@ namespace Coldairarrow.Util.Sockets
                     {
                         int length = _udpClient.EndSend(asyncCallback);
 
-                        HandleSendMsg?.BeginInvoke(this, iPEndPoint, bytes, null, null);
+                        HandleSendMsg?.Invoke(this, iPEndPoint, bytes);
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
         }
 
@@ -124,9 +133,33 @@ namespace Coldairarrow.Util.Sockets
         #region 事件处理
 
         /// <summary>
-        /// 处理异常
+        /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException { get; set; }
+        public Action<Exception> HandleException
+        {
+            get
+            {
+                return _handleException;
+            }
+            set
+            {
+                _handleException = x =>
+                {
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            value?.Invoke(x);
+                        }
+                        catch
+                        {
+
+                        }
+                    });
+                };
+            }
+        }
+        private Action<Exception> _handleException;
 
         /// <summary>
         /// 处理收到的消息

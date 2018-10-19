@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -16,10 +17,12 @@ namespace Coldairarrow.Util.Sockets
         /// </summary>
         /// <param name="socket">维护的Socket对象</param>
         /// <param name="server">维护此连接的服务对象</param>
-        public TcpSocketConnection(Socket socket, TcpSocketServer server)
+        /// <param name="recLength">接受缓冲区大小</param>
+        public TcpSocketConnection(Socket socket, TcpSocketServer server, int recLength)
         {
             _socket = socket;
             _server = server;
+            _recLength = recLength;
         }
 
         #endregion
@@ -37,13 +40,18 @@ namespace Coldairarrow.Util.Sockets
         #region 外部接口
 
         /// <summary>
+        /// 接收区大小,单位:字节
+        /// </summary>
+        public int _recLength { get; set; }
+
+        /// <summary>
         /// 开始接受客户端消息
         /// </summary>
         public void StartRecMsg()
         {
             try
             {
-                byte[] container = new byte[1024];
+                byte[] container = new byte[_recLength];
                 _socket.BeginReceive(container, 0, container.Length, SocketFlags.None, asyncResult =>
                 {
                     try
@@ -58,29 +66,21 @@ namespace Coldairarrow.Util.Sockets
                         {
                             byte[] recBytes = new byte[length];
                             Array.Copy(container, 0, recBytes, 0, length);
-                            try
-                            {
-                                //处理消息
-                                HandleRecMsg?.BeginInvoke(_server, this, recBytes, null, null);
-                            }
-                            catch (Exception ex)
-                            {
-                                HandleException?.Invoke(ex);
-                            }
+                            HandleRecMsg?.Invoke(_server, this, recBytes);
                         }
                         else
                             Close();
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                         Close();
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
                 Close();
             }
         }
@@ -98,17 +98,17 @@ namespace Coldairarrow.Util.Sockets
                     try
                     {
                         int length = _socket.EndSend(asyncResult);
-                        HandleSendMsg?.BeginInvoke(_server, this, bytes, null, null);
+                        HandleSendMsg?.Invoke(_server, this, bytes);
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                     }
                     finally
                     {
@@ -180,11 +180,18 @@ namespace Coldairarrow.Util.Sockets
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
             finally
             {
-                HandleClientClose?.BeginInvoke(_server, this, null, null);
+                try
+                {
+                    HandleClientClose?.Invoke(_server, this);
+                }
+                catch (Exception ex)
+                {
+                    HandleException?.Invoke(ex);
+                }
             }
         }
 

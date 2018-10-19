@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -58,27 +59,26 @@ namespace Coldairarrow.Util.Sockets
                         if (_isListen)
                             StartListen();
 
-                        TcpSocketConnection newConnection = new TcpSocketConnection(newSocket, this)
+                        TcpSocketConnection newConnection = new TcpSocketConnection(newSocket, this, RecLength)
                         {
                             HandleRecMsg = HandleRecMsg == null ? null : new Action<TcpSocketServer, TcpSocketConnection, byte[]>(HandleRecMsg),
                             HandleClientClose = HandleClientClose == null ? null : new Action<TcpSocketServer, TcpSocketConnection>(HandleClientClose),
                             HandleSendMsg = HandleSendMsg == null ? null : new Action<TcpSocketServer, TcpSocketConnection, byte[]>(HandleSendMsg),
                             HandleException = HandleException == null ? null : new Action<Exception>(HandleException)
                         };
-
                         AddConnection(newConnection);
                         newConnection.StartRecMsg();
-                        HandleNewClientConnected?.BeginInvoke(this, newConnection, null, null);
+                        HandleNewClientConnected?.Invoke(this, newConnection);
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        HandleException?.Invoke(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
         }
         private bool PortInUse(int port)
@@ -91,6 +91,11 @@ namespace Coldairarrow.Util.Sockets
         #endregion
 
         #region 外部接口
+
+        /// <summary>
+        /// 接收区大小,单位:字节
+        /// </summary>
+        public int RecLength { get; set; } = 1024;
 
         /// <summary>
         /// 开始服务，监听客户端
@@ -111,12 +116,26 @@ namespace Coldairarrow.Util.Sockets
                 _socket.Listen(int.MaxValue);
                 //开始监听客户端
                 StartListen();
-                HandleServerStarted?.BeginInvoke(this, null, null);
+                HandleServerStarted?.Invoke(this);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                HandleException?.Invoke(ex);
             }
+        }
+
+        /// <summary>
+        /// 停止
+        /// </summary>
+        public void StopServer()
+        {
+            _isListen = false;
+            _socket.Close();
+            _socket.Dispose();
+            GetAllConnections().ForEach(aCon =>
+            {
+                aCon.Close();
+            });
         }
 
         /// <summary>
@@ -146,7 +165,7 @@ namespace Coldairarrow.Util.Sockets
         /// 添加客户端连接
         /// </summary>
         /// <param name="theConnection">需要添加的客户端连接</param>
-        public void AddConnection(TcpSocketConnection theConnection)
+        private void AddConnection(TcpSocketConnection theConnection)
         {
             _connectionList[theConnection.ConnectionId] = theConnection;
         }
@@ -205,7 +224,31 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException { get; set; }
+        public Action<Exception> HandleException
+        {
+            get
+            {
+                return _handleException;
+            }
+            set
+            {
+                _handleException = x =>
+                {
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            value?.Invoke(x);
+                        }
+                        catch
+                        {
+
+                        }
+                    });
+                };
+            }
+        }
+        private Action<Exception> _handleException;
 
         #endregion
 

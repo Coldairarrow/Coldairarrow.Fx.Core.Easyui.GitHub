@@ -77,6 +77,14 @@ namespace Coldairarrow.Util.Sockets
         }
 
         /// <summary>
+        /// 停止服务
+        /// </summary>
+        public void Stop()
+        {
+            _udpClient.Close();
+        }
+
+        /// <summary>
         /// 发送数据
         /// </summary>
         /// <param name="bytes">数据</param>

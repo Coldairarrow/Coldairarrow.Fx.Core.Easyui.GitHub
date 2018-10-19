@@ -48,6 +48,120 @@ namespace Coldairarrow.Util
         }
 
         /// <summary>
+        /// Base64加密
+        /// 注:默认采用UTF8编码
+        /// </summary>
+        /// <param name="source">待加密的明文</param>
+        /// <returns>加密后的字符串</returns>
+        public static string Base64Encode(this string source)
+        {
+            return Base64Encode(source, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Base64加密
+        /// </summary>
+        /// <param name="source">待加密的明文</param>
+        /// <param name="encoding">加密采用的编码方式</param>
+        /// <returns></returns>
+        public static string Base64Encode(this string source, Encoding encoding)
+        {
+            string encode = string.Empty;
+            byte[] bytes = encoding.GetBytes(source);
+            try
+            {
+                encode = Convert.ToBase64String(bytes);
+            }
+            catch
+            {
+                encode = source;
+            }
+            return encode;
+        }
+
+        /// <summary>
+        /// Base64解密
+        /// 注:默认使用UTF8编码
+        /// </summary>
+        /// <param name="result">待解密的密文</param>
+        /// <returns>解密后的字符串</returns>
+        public static string Base64Decode(this string result)
+        {
+            return Base64Decode(result, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Base64解密
+        /// </summary>
+        /// <param name="result">待解密的密文</param>
+        /// <param name="encoding">解密采用的编码方式，注意和加密时采用的方式一致</param>
+        /// <returns>解密后的字符串</returns>
+        public static string Base64Decode(this string result, Encoding encoding)
+        {
+            string decode = string.Empty;
+            byte[] bytes = Convert.FromBase64String(result);
+            try
+            {
+                decode = encoding.GetString(bytes);
+            }
+            catch
+            {
+                decode = result;
+            }
+            return decode;
+        }
+
+        /// <summary>
+        /// 计算SHA1摘要
+        /// 注：默认使用UTF8编码
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <returns></returns>
+        public static byte[] ToSHA1Bytes(this string str)
+        {
+            return str.ToSHA1Bytes(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 计算SHA1摘要
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        public static byte[] ToSHA1Bytes(this string str, Encoding encoding)
+        {
+            SHA1 sha1 = new SHA1CryptoServiceProvider();
+            byte[] inputBytes = encoding.GetBytes(str);
+            byte[] outputBytes = sha1.ComputeHash(inputBytes);
+
+            return outputBytes;
+        }
+
+        /// <summary>
+        /// 转为SHA1哈希加密字符串
+        /// 注：默认使用UTF8编码
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <returns></returns>
+        public static string ToSHA1String(this string str)
+        {
+            return str.ToSHA1String(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 转为SHA1哈希
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        public static string ToSHA1String(this string str, Encoding encoding)
+        {
+            byte[] sha1Bytes = str.ToSHA1Bytes(encoding);
+            string resStr = BitConverter.ToString(sha1Bytes);
+            return resStr.Replace("-", "").ToLower();
+        }
+
+        /// <summary>
         /// string转int
         /// </summary>
         /// <param name="str">字符串</param>
@@ -58,6 +172,16 @@ namespace Coldairarrow.Util
             if (string.IsNullOrEmpty(str))
                 return 0;
             return Convert.ToInt32(str);
+        }
+
+        /// <summary>
+        /// 二进制字符串转为Int
+        /// </summary>
+        /// <param name="str">二进制字符串</param>
+        /// <returns></returns>
+        public static int ToInt_FromBinString(this string str)
+        {
+            return Convert.ToInt32(str, 2);
         }
 
         /// <summary>
@@ -97,7 +221,7 @@ namespace Coldairarrow.Util
         /// <param name="str">字符串</param>
         /// <param name="theEncoding">需要的编码</param>
         /// <returns></returns>
-        public static byte[] ToBytes(this string str,Encoding theEncoding)
+        public static byte[] ToBytes(this string str, Encoding theEncoding)
         {
             return theEncoding.GetBytes(str);
         }
@@ -117,6 +241,17 @@ namespace Coldairarrow.Util
             }
 
             return resBytes.ToArray();
+        }
+
+        /// <summary>
+        /// 将ASCII码形式的字符串转为对应字节数组
+        /// 注：一个字节一个ASCII码字符
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <returns></returns>
+        public static byte[] ToASCIIBytes(this string str)
+        {
+            return str.ToList().Select(x => (byte)x).ToArray();
         }
 
         /// <summary>
@@ -158,7 +293,7 @@ namespace Coldairarrow.Util
         /// <param name="jsonStr">json字符串</param>
         /// <param name="type">对象类型</param>
         /// <returns></returns>
-        public static object ToObject(this string jsonStr,Type type)
+        public static object ToObject(this string jsonStr, Type type)
         {
             return JsonConvert.DeserializeObject(jsonStr, type);
         }
@@ -307,6 +442,18 @@ namespace Coldairarrow.Util
             }
 
             return iPEndPoint;
+        }
+
+        /// <summary>
+        /// 将枚举类型的文本转为枚举类型
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <param name="enumText">枚举文本</param>
+        /// <returns></returns>
+        public static T ToEnum<T>(this string enumText)
+        {
+            var values = typeof(T).GetEnumValues().CastToList<T>();
+            return values.Where(x => x.ToString() == enumText).FirstOrDefault();
         }
     }
 }

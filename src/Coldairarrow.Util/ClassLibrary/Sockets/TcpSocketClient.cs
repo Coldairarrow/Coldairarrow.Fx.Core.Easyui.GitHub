@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -45,11 +46,11 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 开始接受客户端消息
         /// </summary>
-        public void StartRecMsg()
+        private void StartRecMsg()
         {
             try
             {
-                byte[] container = new byte[1024];
+                byte[] container = new byte[RecLength];
                 _socket.BeginReceive(container, 0, container.Length, SocketFlags.None, asyncResult =>
                 {
                     try
@@ -66,7 +67,7 @@ namespace Coldairarrow.Util.Sockets
                             Array.Copy(container, 0, recBytes, 0, length);
 
                             //处理消息
-                            HandleRecMsg?.BeginInvoke(this, recBytes, null, null);
+                            HandleRecMsg?.Invoke(this, recBytes);
                         }
                         else
                             Close();
@@ -90,6 +91,11 @@ namespace Coldairarrow.Util.Sockets
         #region 外部接口
 
         /// <summary>
+        /// 接收区大小,单位:字节
+        /// </summary>
+        public int RecLength { get; set; } = 1024;
+
+        /// <summary>
         /// 开始服务，连接服务端
         /// </summary>
         public void StartClient()
@@ -111,7 +117,7 @@ namespace Coldairarrow.Util.Sockets
                         //开始接受服务器消息
                         StartRecMsg();
 
-                        HandleClientStarted?.BeginInvoke(this, null, null);
+                        HandleClientStarted?.Invoke(this);
                     }
                     catch (Exception ex)
                     {
@@ -123,6 +129,16 @@ namespace Coldairarrow.Util.Sockets
             {
                 HandleException?.BeginInvoke(ex, null, null);
             }
+        }
+
+        /// <summary>
+        /// 关闭
+        /// </summary>
+        public void StopClient()
+        {
+            _isRec = false;
+            _socket.Close();
+            _socket.Dispose();
         }
 
         /// <summary>
@@ -138,7 +154,7 @@ namespace Coldairarrow.Util.Sockets
                     try
                     {
                         int length = _socket.EndSend(asyncResult);
-                        HandleSendMsg?.BeginInvoke(this, bytes, null, null);
+                        HandleSendMsg?.Invoke(this, bytes);
                     }
                     catch (Exception ex)
                     {
@@ -206,7 +222,14 @@ namespace Coldairarrow.Util.Sockets
             }
             finally
             {
-                HandleClientClose?.BeginInvoke(this, null, null);
+                try
+                {
+                    HandleClientClose?.Invoke(this);
+                }
+                catch (Exception ex)
+                {
+                    HandleException?.Invoke(ex);
+                }
             }
         }
 
@@ -246,7 +269,31 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException { get; set; }
+        public Action<Exception> HandleException
+        {
+            get
+            {
+                return _handleException;
+            }
+            set
+            {
+                _handleException = x =>
+                {
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            value?.Invoke(x);
+                        }
+                        catch
+                        {
+
+                        }
+                    });
+                };
+            }
+        }
+        private Action<Exception> _handleException;
 
         #endregion
     }
