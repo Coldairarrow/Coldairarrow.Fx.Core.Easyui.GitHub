@@ -138,7 +138,10 @@ namespace Coldairarrow.Util
             string parttern = "^(data:image/.*?;base64,).*?$";
 
             var match = Regex.Match(base64UrlStr, parttern);
-            return base64UrlStr.Replace(match.Groups[1].ToString(), "");
+            if (match.Groups.Count > 1)
+                base64UrlStr = base64UrlStr.Replace(match.Groups[1].ToString(), "");
+
+            return base64UrlStr;
         }
     }
 }
