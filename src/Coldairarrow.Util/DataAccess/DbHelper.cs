@@ -255,10 +255,10 @@ namespace Coldairarrow.Util
             string schema = "";
             if (!schemaName.IsNullOrEmpty())
                 schema = $@", Schema = ""{schemaName}""";
-            infos.ForEach(item =>
+            infos.ForEach((item, index) =>
             {
-                string isKey = item.IsKey ? @"
-        [Key]" : "";
+                string isKey = item.IsKey ? $@"
+        [Key, Column(Order = {index + 1})]" : "";
                 Type type = DbTypeStr_To_CsharpType(item.Type);
                 string isNullable = item.IsNullable && type.IsValueType ? "?" : "";
                 string description = item.Description.IsNullOrEmpty() ? item.Name : item.Description;
