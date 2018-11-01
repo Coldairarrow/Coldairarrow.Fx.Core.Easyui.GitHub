@@ -68,21 +68,22 @@ namespace Coldairarrow.Util
         {
             if (schemaName.IsNullOrEmpty())
                 schemaName = "dbo";
+
             string sql = @"select
-  a.name AS TableName,
-	min(g.[value]) AS Description
+[TableName] = a.name,
+[Description] = g.value
 from
   sys.tables a left join sys.extended_properties g
   on (a.object_id = g.major_id AND g.minor_id = 0)
-  group by a.name
+where g.name= 'MS_Description'
 UNION
 select
-    a.name AS TableName,
-	min(g.[value]) AS Description
+[TableName] = a.name,
+[Description] = g.value
 from
   sys.views a left join sys.extended_properties g
   on (a.object_id = g.major_id AND g.minor_id = 0)
-group by a.name";
+where g.name= 'MS_Description'";
             return GetListBySql<DbTableInfo>(sql);
         }
 
