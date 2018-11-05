@@ -177,7 +177,11 @@ namespace Coldairarrow.Util.Sockets
         public void RemoveConnection(TcpSocketConnection theConnection)
         {
             if (!string.IsNullOrEmpty(theConnection.ConnectionId))
-                _connectionList.TryRemove(theConnection.ConnectionId, out TcpSocketConnection theOutValue);
+            {
+                var theCon = _connectionList[theConnection.ConnectionId];
+                if (theCon == theConnection)
+                    _connectionList.TryRemove(theConnection.ConnectionId, out TcpSocketConnection theOutValue);
+            }
         }
 
         /// <summary>

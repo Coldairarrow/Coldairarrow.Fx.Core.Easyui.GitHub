@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -35,14 +34,15 @@ namespace Coldairarrow.Util.Sockets
         private bool _isClosed { get; set; } = false;
         private string _connectionId { get; set; } = Guid.NewGuid().ToString();
 
+        /// <summary>
+        /// 接收区大小,单位:字节
+        /// </summary>
+        private int _recLength { get; set; }
+
         #endregion
 
         #region 外部接口
 
-        /// <summary>
-        /// 接收区大小,单位:字节
-        /// </summary>
-        public int _recLength { get; set; }
 
         /// <summary>
         /// 开始接受客户端消息
