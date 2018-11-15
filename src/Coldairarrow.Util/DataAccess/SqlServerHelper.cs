@@ -74,16 +74,14 @@ namespace Coldairarrow.Util
 [Description] = g.value
 from
   sys.tables a left join sys.extended_properties g
-  on (a.object_id = g.major_id AND g.minor_id = 0)
-where g.name= 'MS_Description'
+  on (a.object_id = g.major_id AND g.minor_id = 0 AND g.name= 'MS_Description')
 UNION
 select
 [TableName] = a.name,
 [Description] = g.value
 from
   sys.views a left join sys.extended_properties g
-  on (a.object_id = g.major_id AND g.minor_id = 0)
-where g.name= 'MS_Description'";
+  on (a.object_id = g.major_id AND g.minor_id = 0 AND g.name= 'MS_Description')";
             return GetListBySql<DbTableInfo>(sql);
         }
 
