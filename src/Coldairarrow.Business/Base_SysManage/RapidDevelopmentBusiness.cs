@@ -498,7 +498,7 @@ $@"@using Coldairarrow.Entity.{areaName};
             $.postJSON(rootUrl + '{areaName}/{entityName}/SaveData', theEntity, function (resJson) {{
                 if (resJson.Success) {{
                     parent.dialogMsg('保存成功!');
-                    parent.$('#dataTable').datagrid('reload');
+                    parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                     parent.dialogClose('form');
                 }}
                 else {{

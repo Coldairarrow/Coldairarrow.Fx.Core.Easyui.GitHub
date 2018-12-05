@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <None Include="Areas\Base_SysManage\Views\Base_SysLog\Index.cshtml" />
+    <None Include="wwwroot\Scripts\vendor\html5Uploader\html5Uploader.js" />
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\emotion\emotion.js" />
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\formula\formula.js" />
     <None Include="wwwroot\Scripts\vendor\umeditor\dialogs\image\image.js" />

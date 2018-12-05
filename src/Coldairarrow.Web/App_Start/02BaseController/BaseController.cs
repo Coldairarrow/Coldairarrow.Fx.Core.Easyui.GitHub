@@ -4,6 +4,7 @@ using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Text;
 
 namespace Coldairarrow.Web
 {
@@ -21,6 +22,16 @@ namespace Coldairarrow.Web
             context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.HttpContext.Response.Headers.Add("Access-Control-Allow-Headers", "*");
             context.HttpContext.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        }
+
+        /// <summary>
+        /// 默认返回JSON
+        /// </summary>
+        /// <param name="content">JSON字符串</param>
+        /// <returns></returns>
+        public override ContentResult Content(string content)
+        {
+            return base.Content(content, "application/json", Encoding.UTF8);
         }
 
         /// <summary>
