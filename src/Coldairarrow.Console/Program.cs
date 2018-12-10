@@ -6,6 +6,8 @@ using Coldairarrow.Util.RPC;
 using System.Diagnostics;
 using Coldairarrow.Entity.Base_SysManage;
 using System.Text;
+using System.Threading.Tasks;
+using Coldairarrow.Business.Base_SysManage;
 
 namespace Coldairarrow.ConsoleApp
 {
@@ -24,20 +26,43 @@ namespace Coldairarrow.ConsoleApp
     {
         static void Main(string[] args)
         {
-            RPCServer rPCServer = new RPCServer(9000);
+            Action<Exception> handleException = ex =>
+            {
+                Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+            };
+            int port = 9999;
+            int count = 10000*10;
+            RPCServer rPCServer = new RPCServer(port);
+            rPCServer.HandleException = handleException;
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
+            IHello client = null;
+            client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
             Stopwatch watch = new Stopwatch();
-
-            var client = RPCClientFactory.GetClient<IHello>("127.0.0.1", 9000);
-            client.SayHello("Hello");
-
             watch.Start();
-            var res = client.SayHello("Hello");
+            List<Task> tasks = new List<Task>();
+            LoopHelper.Loop(10, () =>
+            {
+                tasks.Add( Task.Run(() =>
+                {
+                    LoopHelper.Loop(count, () =>
+                    {
+                        string msg = client.SayHello("Hello");
+                        //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
+                    });
+                }));
+            });
             watch.Stop();
-            Console.WriteLine($"客户端:{res}");
+            Task.WaitAll(tasks.ToArray());
+            Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
 
-            Console.WriteLine($"耗时:{watch.ElapsedMilliseconds}ms");
+            Base_UserBusiness bus = new Base_UserBusiness();
+            bus.Service.HandleSqlLog = log =>
+            {
+                Console.WriteLine(log);
+            };
+            bus.GetList();
+
 
             Console.ReadLine();
         }

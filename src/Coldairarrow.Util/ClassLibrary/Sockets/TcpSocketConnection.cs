@@ -71,6 +71,10 @@ namespace Coldairarrow.Util.Sockets
                         else
                             Close();
                     }
+                    catch (ObjectDisposedException)
+                    {
+
+                    }
                     catch (Exception ex)
                     {
                         HandleException?.Invoke(ex);
