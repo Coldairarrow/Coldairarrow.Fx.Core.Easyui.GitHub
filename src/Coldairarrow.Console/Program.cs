@@ -26,14 +26,13 @@ namespace Coldairarrow.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Action<Exception> handleException = ex =>
-            {
-                Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
-            };
             int port = 9999;
             int count = 10000*10;
             RPCServer rPCServer = new RPCServer(port);
-            rPCServer.HandleException = handleException;
+            rPCServer.HandleException = ex =>
+            {
+                Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+            };
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
             IHello client = null;
@@ -54,14 +53,7 @@ namespace Coldairarrow.ConsoleApp
             });
             watch.Stop();
             Task.WaitAll(tasks.ToArray());
-            Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
-
-            Base_UserBusiness bus = new Base_UserBusiness();
-            bus.Service.HandleSqlLog = log =>
-            {
-                Console.WriteLine(log);
-            };
-            bus.GetList();
+            //Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
 
 
             Console.ReadLine();

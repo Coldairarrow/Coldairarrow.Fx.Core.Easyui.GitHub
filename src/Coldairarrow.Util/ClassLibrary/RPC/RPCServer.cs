@@ -58,7 +58,7 @@ namespace Coldairarrow.Util.RPC
                     finally
                     {
                         b.Send(response.ToJson().ToBytes(Encoding.UTF8));
-                        b.Close();
+                        //b.Close();
                     }
                 },
                 RecLength = 1024 * 1024,
