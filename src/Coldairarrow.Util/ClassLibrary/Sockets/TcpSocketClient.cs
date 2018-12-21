@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -72,18 +72,28 @@ namespace Coldairarrow.Util.Sockets
                         else
                             Close();
                     }
+                    //捕捉Socket已释放异常
+                    catch (ObjectDisposedException)
+                    {
+
+                    }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex); ;
                         Close();
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex); ;
                 Close();
             }
+        }
+        private void AccessException(Exception ex)
+        {
+            if (!(ex is ObjectDisposedException))
+                HandleException?.Invoke(ex);
         }
 
         #endregion
@@ -98,7 +108,7 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 开始服务，连接服务端
         /// </summary>
-        public void StartClient()
+        public bool StartClient()
         {
             try
             {
@@ -109,6 +119,8 @@ namespace Coldairarrow.Util.Sockets
                 //创建网络节点对象 包含 ip和port
                 IPEndPoint endpoint = new IPEndPoint(address, _port);
                 //将 监听套接字  绑定到 对应的IP和端口
+                AutoResetEvent waitEvent = new AutoResetEvent(false);
+
                 _socket.BeginConnect(endpoint, asyncResult =>
                 {
                     try
@@ -118,16 +130,20 @@ namespace Coldairarrow.Util.Sockets
                         StartRecMsg();
 
                         HandleClientStarted?.Invoke(this);
+                        waitEvent.Set();
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex); ;
                     }
                 }, null);
+                waitEvent.WaitOne();
+                return true;
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex);
+                return false;
             }
         }
 
@@ -158,13 +174,13 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex); ;
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex); ;
             }
         }
 
@@ -208,7 +224,7 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex); ;
                     }
                     finally
                     {
@@ -216,9 +232,20 @@ namespace Coldairarrow.Util.Sockets
                     }
                 }, null);
             }
+            catch (ObjectDisposedException)
+            {
+
+            }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                try
+                {
+                    AccessException(ex); ;
+                }
+                catch
+                {
+
+                }
             }
             finally
             {
@@ -228,7 +255,7 @@ namespace Coldairarrow.Util.Sockets
                 }
                 catch (Exception ex)
                 {
-                    HandleException?.Invoke(ex);
+                    AccessException(ex); ;
                 }
             }
         }
@@ -269,31 +296,7 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException
-        {
-            get
-            {
-                return _handleException;
-            }
-            set
-            {
-                _handleException = x =>
-                {
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            value?.Invoke(x);
-                        }
-                        catch
-                        {
-
-                        }
-                    });
-                };
-            }
-        }
-        private Action<Exception> _handleException;
+        public Action<Exception> HandleException { get; set; }
 
         #endregion
     }
