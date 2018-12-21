@@ -24,20 +24,26 @@ namespace Coldairarrow.ConsoleApp
     {
         static void Main(string[] args)
         {
-            RPCServer rPCServer = new RPCServer(9000);
+            int port = 11111;
+            int count = 1;
+
+            RPCServer rPCServer = new RPCServer(port);
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
             Stopwatch watch = new Stopwatch();
 
-            var client = RPCClientFactory.GetClient<IHello>("127.0.0.1", 9000);
+            var client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
             client.SayHello("Hello");
 
             watch.Start();
-            var res = client.SayHello("Hello");
+            LoopHelper.Loop(count, () =>
+            {
+                var res = client.SayHello("Hello");
+                //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:fff")}客户端:{res}");
+            });
             watch.Stop();
-            Console.WriteLine($"客户端:{res}");
 
-            Console.WriteLine($"耗时:{watch.ElapsedMilliseconds}ms");
+            Console.WriteLine($"耗时:{(double)watch.ElapsedMilliseconds/count}ms");
 
             Console.ReadLine();
         }
