@@ -16,6 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ClassLibrary\RPC\**" />
+    <EmbeddedResource Remove="ClassLibrary\RPC\**" />
+    <None Remove="ClassLibrary\RPC\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="ImpromptuInterface" Version="7.0.1" />
