@@ -15,7 +15,16 @@ namespace Coldairarrow.Util
             SystemCache = new SystemCache();
 
             if (!GlobalSwitch.RedisConfig.IsNullOrEmpty())
-                RedisCache = new RedisCache(GlobalSwitch.RedisConfig);
+            {
+                try
+                {
+                    RedisCache = new RedisCache(GlobalSwitch.RedisConfig);
+                }
+                catch
+                {
+
+                }
+            }
 
             switch (GlobalSwitch.CacheType)
             {
