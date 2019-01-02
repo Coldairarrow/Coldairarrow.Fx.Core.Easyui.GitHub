@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using System.Data;
 using System.IO;
+using System.Text;
 
 namespace Coldairarrow.Util
 {
@@ -9,6 +10,11 @@ namespace Coldairarrow.Util
     /// </summary>
     public class AsposeOfficeHelper
     {
+        static AsposeOfficeHelper()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
+
         /// <summary>
         /// 将DataTable输出为字节数组
         /// </summary>
