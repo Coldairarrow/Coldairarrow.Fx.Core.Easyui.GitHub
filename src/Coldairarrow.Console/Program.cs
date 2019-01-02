@@ -2,10 +2,11 @@
 using Coldairarrow.Util.Sockets;
 using Coldairarrow.Util;
 using System.Collections.Generic;
-using Coldairarrow.Util.RPC;
 using System.Diagnostics;
 using Coldairarrow.Entity.Base_SysManage;
 using System.Text;
+using System.Threading.Tasks;
+using Coldairarrow.DotNettyRPC;
 
 namespace Coldairarrow.ConsoleApp
 {
@@ -22,28 +23,48 @@ namespace Coldairarrow.ConsoleApp
     }
     class Program
     {
-        static void Main(string[] args)
+        static void DotNettyRPCTest()
         {
-            int port = 11111;
-            int count = 1;
-
+            int threadCount = 1;
+            int port = 9999;
+            int count = 10000;
+            int errorCount = 0;
             RPCServer rPCServer = new RPCServer(port);
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
+            IHello client = null;
+            client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
+            client.SayHello("aaa");
             Stopwatch watch = new Stopwatch();
-
-            var client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
-            client.SayHello("Hello");
-
+            List<Task> tasks = new List<Task>();
             watch.Start();
-            LoopHelper.Loop(count, () =>
+            LoopHelper.Loop(threadCount, () =>
             {
-                var res = client.SayHello("Hello");
-                //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:fff")}客户端:{res}");
+                tasks.Add(Task.Run(() =>
+                {
+                    LoopHelper.Loop(count, () =>
+                    {
+                        string msg = string.Empty;
+                        try
+                        {
+                            msg = client.SayHello("Hello");
+                            //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+                        }
+                    });
+                }));
             });
+            Task.WaitAll(tasks.ToArray());
             watch.Stop();
-
-            Console.WriteLine($"耗时:{(double)watch.ElapsedMilliseconds/count}ms");
+            Console.WriteLine($"并发数:{threadCount},运行:{count}次,每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
+            Console.WriteLine($"错误次数：{errorCount}");
+        }
+        static void Main(string[] args)
+        {
+            DotNettyRPCTest();
 
             Console.ReadLine();
         }
