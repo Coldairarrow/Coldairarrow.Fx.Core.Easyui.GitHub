@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
 namespace Coldairarrow.Business
@@ -520,6 +520,13 @@ namespace Coldairarrow.Business
 
         #region 其它操作
 
+        public virtual EnumType.LogType LogType { get => throw new Exception("请在子类重写"); }
+
+        public void WriteSysLog(string logContent)
+        {
+            WriteSysLog(logContent, LogType);
+        }
+
         /// <summary>
         /// 写入日志
         /// </summary>
@@ -538,6 +545,35 @@ namespace Coldairarrow.Business
         {
             BusHelper.HandleException(ex);
         }
+
+        /// <summary>
+        /// 校验重复的数据字段
+        /// </summary>
+        /// <param name="data">校验的数据</param>
+        public void CheckRepeatProperty(T data)
+        {
+            CheckRepeatProperty(data, CheckRepeatPropertyConfig);
+        }
+
+        /// <summary>
+        /// 校验重复的数据字段
+        /// </summary>
+        /// <param name="data">校验的数据</param>
+        /// <param name="properties">校验的属性，Key为字段名，Value为重复后的提示信息</param>
+        public void CheckRepeatProperty(T data, Dictionary<string, string> properties)
+        {
+            foreach (var aProperty in properties)
+            {
+                if (!data.GetPropertyValue(aProperty.Key).IsNullOrEmpty())
+                {
+                    int count = GetIQueryable().Where($"Id!=@0&&{aProperty.Key}==@1", data.GetPropertyValue("Id"), data.GetPropertyValue(aProperty.Key)).Count();
+                    if (count > 0)
+                        throw new Exception(aProperty.Value);
+                }
+            }
+        }
+
+        public virtual Dictionary<string, string> CheckRepeatPropertyConfig { get; } = new Dictionary<string, string>();
 
         #endregion
     }
