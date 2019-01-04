@@ -376,6 +376,8 @@ $@"@{{
             singleSelect: false,
             selectOnCheck: false,
             checkOnSelect: false,
+            //sortName: 'Id',
+            //sortOrder: 'asc',
             //rownumbers: true,
             pagination: true,
             pageSize: 30,
