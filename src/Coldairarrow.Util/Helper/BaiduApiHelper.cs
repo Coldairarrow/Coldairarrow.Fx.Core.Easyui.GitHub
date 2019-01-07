@@ -110,7 +110,7 @@ namespace Coldairarrow.Util
         {
             string ak = _accessKeyId;
             string sk = _secretAccessKey;
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.Now.ToCstTime();
             int expirationInSeconds = 1200;
 
             HttpWebRequest req = WebRequest.Create(host + url) as HttpWebRequest;

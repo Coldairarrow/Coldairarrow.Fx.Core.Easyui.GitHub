@@ -62,7 +62,7 @@ namespace Coldairarrow.Business.Base_SysManage
             try
             {
                 //检验签名是否过期
-                DateTime now = DateTime.Now;
+                DateTime now = DateTime.Now.ToCstTime();
                 DateTime requestTime = Convert.ToDateTime(allRequestParames["time"]?.ToString());
                 if (requestTime < now.AddMinutes(-5) || requestTime > now.AddMinutes(5))
                     return false;
@@ -104,7 +104,7 @@ namespace Coldairarrow.Business.Base_SysManage
                 }
             }
 
-            requestParames.Add("time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            requestParames.Add("time", DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss"));
             requestParames.Add("appId", appId);
 
             string sign = BuildSign(requestParames, appSecret);

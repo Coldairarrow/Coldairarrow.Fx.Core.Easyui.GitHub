@@ -19,7 +19,7 @@ namespace Coldairarrow.Util
             Task.Run(() =>
             {
                 string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "A_log.txt");
-                string logContent = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}:{log}\r\n";
+                string logContent = $"{DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss")}:{log}\r\n";
                 File.AppendAllText(filePath, logContent);
             });
         }

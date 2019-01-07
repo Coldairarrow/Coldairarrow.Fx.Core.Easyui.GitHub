@@ -12,7 +12,7 @@ namespace Coldairarrow.Util
         /// <returns></returns>
         public static string ToSequentialGuid(this Guid guid)
         {
-            var timeStr = (DateTime.Now.Ticks / 10000).ToString("x8");
+            var timeStr = (DateTime.Now.ToCstTime().Ticks / 10000).ToString("x8");
             var newGuid = $"{timeStr.PadLeft(13, '0')}-{guid}";
 
             return newGuid;

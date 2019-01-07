@@ -48,7 +48,7 @@ namespace Coldairarrow.ConsoleApp
                         try
                         {
                             msg = client.SayHello("Hello");
-                            //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
+                            //Console.WriteLine($"{DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
                         }
                         catch (Exception ex)
                         {

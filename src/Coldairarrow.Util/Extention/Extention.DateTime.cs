@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NodaTime;
+using System;
 using System.Globalization;
 
 namespace Coldairarrow.Util
@@ -50,6 +51,18 @@ namespace Coldairarrow.Util
         public static DateTime Default(this DateTime dt)
         {
             return DateTime.Parse("1970-01-01");
+        }
+
+        /// <summary>
+        /// 转为标准时间（北京时间，解决Linux时区问题）
+        /// </summary>
+        /// <param name="dt">当前时间</param>
+        /// <returns></returns>
+        public static DateTime ToCstTime(this DateTime dt)
+        {
+            Instant now = SystemClock.Instance.GetCurrentInstant();
+            var shanghaiZone = DateTimeZoneProviders.Tzdb["Asia/Shanghai"];
+            return now.InZone(shanghaiZone).ToDateTimeUnspecified();
         }
     }
 }

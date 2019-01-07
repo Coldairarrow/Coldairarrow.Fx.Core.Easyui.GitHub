@@ -29,7 +29,7 @@ namespace Coldairarrow.Business.Common
                 Id = Guid.NewGuid().ToSequentialGuid(),
                 LogType = logType.ToString(),
                 LogContent = logContent.Replace("\r\n", "<br />").Replace("  ", "&nbsp;&nbsp;"),
-                OpTime = DateTime.Now,
+                OpTime = DateTime.Now.ToCstTime(),
                 OpUserName = userName
             };
             Task.Run(() =>

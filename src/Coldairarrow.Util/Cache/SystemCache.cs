@@ -44,13 +44,13 @@ namespace Coldairarrow.Util
 
         public void SetCache(string key, object value, TimeSpan timeout)
         {
-            _cache.Set(key, value, new DateTimeOffset(DateTime.Now + timeout));
+            _cache.Set(key, value, new DateTimeOffset(DateTime.Now.ToCstTime() + timeout));
         }
 
         public void SetCache(string key, object value, TimeSpan timeout, ExpireType expireType)
         {
             if (expireType == ExpireType.Absolute)
-                _cache.Set(key, value, new DateTimeOffset(DateTime.Now + timeout));
+                _cache.Set(key, value, new DateTimeOffset(DateTime.Now.ToCstTime() + timeout));
             else
                 _cache.Set(key, value, timeout);
         }
