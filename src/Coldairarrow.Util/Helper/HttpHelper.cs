@@ -219,8 +219,7 @@ namespace Coldairarrow.Util
             if (contentType.Contains("application/json"))
             {
                 var stream = request.Body;
-                stream.Position = 0;
-                string str = new StreamReader(stream).ReadToEnd();
+                string str = stream.ReadToString(Encoding.UTF8);
                 var obj = str.ToJObject();
                 foreach (var aProperty in obj)
                 {
