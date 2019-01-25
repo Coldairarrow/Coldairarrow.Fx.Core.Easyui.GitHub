@@ -2,7 +2,6 @@
 
 namespace Coldairarrow.Web
 {
-    [IgnoreLogin]
     public class TestController : BaseController
     {
         public ActionResult Index()
@@ -13,6 +12,12 @@ namespace Coldairarrow.Web
         public ActionResult RequestDemo()
         {
             return View();
+        }
+
+        [CheckParamNotEmpty("name","sex")]
+        public IActionResult Test()
+        {
+            return Success();
         }
     }
 }
