@@ -7,6 +7,7 @@ using Coldairarrow.Entity.Base_SysManage;
 using System.Text;
 using System.Threading.Tasks;
 using Coldairarrow.DotNettyRPC;
+using System.IO;
 
 namespace Coldairarrow.ConsoleApp
 {
@@ -64,7 +65,8 @@ namespace Coldairarrow.ConsoleApp
         }
         static void Main(string[] args)
         {
-            DotNettyRPCTest();
+            //DotNettyRPCTest();
+            var path= Path.Combine("aaa", "bb", "a.txt");
 
             Console.ReadLine();
         }

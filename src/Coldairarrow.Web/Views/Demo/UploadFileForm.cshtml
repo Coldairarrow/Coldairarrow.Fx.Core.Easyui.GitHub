@@ -44,7 +44,7 @@
 
                     if (resJson.Success) {
                         parent.dialogMsg('上传成功!');
-                        parent.$('#dataTable').datagrid('reload');
+                        parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                         parent.dialogClose('UploadFileForm');
                     }
                     else {

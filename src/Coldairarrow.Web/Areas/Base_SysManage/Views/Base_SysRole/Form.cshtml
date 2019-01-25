@@ -43,7 +43,7 @@
                 if (resJson.Success) {
                     parent.dialogMsg('保存成功!');
                     parent.dialogClose('form');
-                    parent.$('#dataTable').datagrid('reload');
+                    parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                 }
                 else {
                     dialogError(resJson.Msg);
