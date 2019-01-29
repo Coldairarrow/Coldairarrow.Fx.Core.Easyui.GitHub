@@ -1,7 +1,17 @@
 ﻿//关闭所有jquery AJAX缓存
 (function ($) {
     $.ajaxSetup({
-        cache: false //关闭AJAX缓存
+        cache: false, //关闭AJAX缓存
+        dataFilter: function (res, dataType) {//登录失败过滤
+            try {
+                var resJson = JSON.parse(res);
+                if (resJson.ErrorCode == 1)
+                    top.document.location.href = '/Home/Login';
+            } catch {
+
+            }
+            return res;
+        }
     });
 })(jQuery);
 

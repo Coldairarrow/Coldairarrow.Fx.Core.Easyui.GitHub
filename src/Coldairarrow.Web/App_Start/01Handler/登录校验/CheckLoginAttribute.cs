@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.Common;
 using Coldairarrow.Util;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -19,6 +20,8 @@ namespace Coldairarrow.Web
         /// <param name="filterContext">过滤器上下文</param>
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var request = filterContext.HttpContext.Request;
+
             try
             {
                 //若为本地测试，则不需要登录
@@ -44,16 +47,27 @@ namespace Coldairarrow.Web
 
             void RedirectToLogin()
             {
-                UrlHelper urlHelper = new UrlHelper(filterContext);
-                string loginUrl = urlHelper.Content("~/Home/Login");
-                string script = $@"    
+                if (request.IsAjaxRequest())
+                {
+                    filterContext.Result = new ContentResult
+                    {
+                        Content = new AjaxResult { Success = false, ErrorCode = 1, Msg = "未登录" }.ToJson(),
+                        ContentType = "application/json;charset=UTF-8"
+                    };
+                }
+                else
+                {
+                    UrlHelper urlHelper = new UrlHelper(filterContext);
+                    string loginUrl = urlHelper.Content("~/Home/Login");
+                    string script = $@"    
 <html>
     <script>
         top.location.href = '{loginUrl}';
     </script>
 </html>
 ";
-                filterContext.Result = new ContentResult { Content = script, ContentType = "text/html" };
+                    filterContext.Result = new ContentResult { Content = script, ContentType = "text/html" };
+                }
             }
         }
 
