@@ -36,8 +36,7 @@ namespace Coldairarrow.Business.Common
             {
                 try
                 {
-                    BaseBusiness<Base_SysLog> baseBusiness = new BaseBusiness<Base_SysLog>();
-                    baseBusiness.Service.Insert(newLog);
+                    LoggerFactory.GetLogger().WriteSysLog(newLog);
                 }
                 catch
                 {

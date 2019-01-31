@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using System;
 
 namespace Coldairarrow.Util
 {
@@ -71,6 +72,20 @@ namespace Coldairarrow.Util
         /// Redis配置字符串
         /// </summary>
         public static string RedisConfig { get; } = null /*"localhost:6379,password=123456"*/;
+
+        #endregion
+
+        #region 日志相关
+
+        /// <summary>
+        /// 日志记录方式
+        /// </summary>
+        public static LoggerType LoggerType { get; set; } = LoggerType.ElasticSearch;
+
+        /// <summary>
+        /// ElasticSearch服务器配置
+        /// </summary>
+        public static Uri[] ElasticSearchNodes { get; set; } = new Uri[] { new Uri("http://localhost:9200/") };
 
         #endregion
     }
