@@ -7,7 +7,7 @@
                 var resJson = JSON.parse(res);
                 if (resJson.ErrorCode == 1)
                     top.document.location.href = '/Home/Login';
-            } catch {
+            } catch(ex) {
 
             }
             return res;
