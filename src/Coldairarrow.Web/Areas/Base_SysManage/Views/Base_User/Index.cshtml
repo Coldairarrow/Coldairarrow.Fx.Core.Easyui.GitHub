@@ -74,7 +74,7 @@
                 },
                 {
                     title: '出生日期', field: 'Birthday', width: 200, formatter: function (value) {
-                        return new Date(value).format('yyyy-MM-dd');
+                        return toDateString(value, 'yyyy-MM-dd');
                     }
                 },
                 { title: '所属角色', field: 'RoleNameList', width: 600 },
