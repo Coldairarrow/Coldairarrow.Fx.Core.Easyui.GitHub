@@ -53,7 +53,7 @@ namespace Coldairarrow.Business
                 .Skip((pagination.page - 1) * pagination.rows)
                 .Take(pagination.rows)
             );
-            pagination.RecordCount = result.Hits.Count;
+            pagination.RecordCount = (int)result.Total;
 
             return result.Documents.ToList();
         }
