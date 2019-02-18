@@ -80,7 +80,7 @@ namespace Coldairarrow.Util
         /// <summary>
         /// 日志记录方式
         /// </summary>
-        public static LoggerType LoggerType { get; set; } = LoggerType.ElasticSearch;
+        public static LoggerType LoggerType { get; set; } = LoggerType.RDBMS;
 
         /// <summary>
         /// ElasticSearch服务器配置
