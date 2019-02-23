@@ -220,10 +220,13 @@ namespace Coldairarrow.Util
             {
                 var stream = request.Body;
                 string str = stream.ReadToString(Encoding.UTF8);
-                var obj = str.ToJObject();
-                foreach (var aProperty in obj)
+                if (!str.IsNullOrEmpty())
                 {
-                    allParams.Add(aProperty.Key, aProperty.Value);
+                    var obj = str.ToJObject();
+                    foreach (var aProperty in obj)
+                    {
+                        allParams.Add(aProperty.Key, aProperty.Value);
+                    }
                 }
             }
             return allParams;
